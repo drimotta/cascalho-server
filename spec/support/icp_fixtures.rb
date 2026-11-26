@@ -128,6 +128,17 @@ module IcpFixtures
     [cert, key]
   end
 
+  # Writes the hierarchy as the app reads it: roots/, intermediates/ and
+  # crls/ with PEM files. Returns the directory.
+  def write_trust_dir(dir)
+    %w[roots intermediates crls].each { |d| Dir.mkdir(File.join(dir, d)) }
+    File.write(File.join(dir, "roots", "root.pem"), pki.root.to_pem)
+    File.write(File.join(dir, "intermediates", "ca.pem"), pki.ca.to_pem)
+    File.write(File.join(dir, "crls", "root.pem"), pki.root_crl.to_pem)
+    File.write(File.join(dir, "crls", "ca.pem"), pki.ca_crl.to_pem)
+    dir
+  end
+
   # Signs a login challenge the way libnfse does.
   def sign_challenge(key, challenge, prefix: "NFSE-LOGIN-V1\n")
     key.sign("SHA256", prefix + challenge)
