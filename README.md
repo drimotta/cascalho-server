@@ -35,6 +35,7 @@ Both libraries are loaded into the process, so run Puma as a single process
 ## Tests
 
 ```sh
+HANAMI_ENV=test bundle exec hanami db prepare   # once, and after new migrations
 bundle exec rspec
 ```
 

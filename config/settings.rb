@@ -5,7 +5,7 @@ module Cascalho
     # The ICP-Brasil trust: roots/, intermediates/ and crls/ holding PEM
     # files. Only these roots are trusted; refresh the CRLs from ITI and the
     # CAs on a schedule.
-    setting :icp_trust_dir, constructor: Types::String
+    setting :icp_trust_dir, default: "config/icp", constructor: Types::String
     # How long a session lasts, and how long a new certificate for a known
     # CPF waits before it can log in without approval.
     setting :session_ttl_hours, default: 12, constructor: Types::Params::Integer
