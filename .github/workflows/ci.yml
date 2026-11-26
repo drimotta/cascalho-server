@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: server
+      - uses: actions/checkout@v4
+        with:
+          repository: drimotta/nfse
+          path: nfse
+      - uses: actions/checkout@v4
+        with:
+          repository: drimotta/invoices
+          path: invoices
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: invoices/go.mod
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+          working-directory: server
+      - name: Build libnfse
+        run: cargo build
+        working-directory: nfse
+      - name: Build libinvoices
+        run: make lib
+        working-directory: invoices
+      - name: Specs
+        run: bundle exec rspec
+        working-directory: server
+        env:
+          NFSE_DIR: ${{ github.workspace }}/nfse
+          INVOICES_DIR: ${{ github.workspace }}/invoices

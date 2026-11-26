@@ -39,5 +39,27 @@ module Cascalho
     def render_error(response, status, code, message)
       render_json(response, status, {error: {code: code, message: message}})
     end
+
+    def not_found(response, what) = render_error(response, 404, "not_found", "no such #{what}")
+
+    # The request's JSON object with its keys as sent (Hanami's params are
+    # symbolized and filtered; documents passed through to the libraries
+    # keep their own field names).
+    def json_body(request)
+      io = request.body
+      io.rewind
+      text = io.read
+      io.rewind
+      parsed = text.to_s.empty? ? {} : JSON.parse(text)
+      parsed.is_a?(Hash) ? parsed : {}
+    rescue JSON::ParserError
+      {}
+    end
+
+    def send_pdf(response, bytes)
+      response.status = 200
+      response.headers["Content-Type"] = "application/pdf"
+      response.body = bytes
+    end
   end
 end

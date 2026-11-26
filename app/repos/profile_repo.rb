@@ -24,8 +24,11 @@ module Cascalho
         row && present(row)
       end
 
-      def update(id, name:, settings:)
-        db[:profiles].where(id: id).update(name: name, settings: JSON.generate(settings))
+      def update(id, name: nil, settings: nil)
+        fields = {}
+        fields[:name] = name if name
+        fields[:settings] = JSON.generate(settings) if settings
+        db[:profiles].where(id: id).update(fields) unless fields.empty?
       end
 
       def present(row)
