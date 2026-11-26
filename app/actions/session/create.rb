@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "base64"
+
 module Cascalho
   module Actions
     module Session
