@@ -2,4 +2,3 @@
 log/*
 db/*.sqlite
 spec/examples.txt
-.env
